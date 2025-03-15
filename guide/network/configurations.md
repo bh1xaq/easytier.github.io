@@ -1,94 +1,88 @@
-# 其他
+# 完整配置选项
 
 可使用 `easytier-core --help` 查看全部配置项
 
-```sh
-A full meshed p2p VPN, connecting all your devices in one network with one command.
+## 基本设置
 
-Usage: easytier-core [OPTIONS]
+- **启动与版本**
 
-Options:
-  -c, --config-file <CONFIG_FILE>
-          path to the config file, NOTE: if this is set, all other options will be ignored
-      --network-name <NETWORK_NAME>
-          network name to identify this vpn network [default: default]
-      --network-secret <NETWORK_SECRET>
-          network secret to verify this node belongs to the vpn network [default: ]
-  -i, --ipv4 <IPV4>
-          ipv4 address of this vpn node, if empty, this node will only forward packets and no TUN device will be
-          created
-  -d, --dhcp
-          automatically determine and set IP address by Easytier, and the
-          IP address starts from 10.0.0.1 by default. Warning, if there is an IP
-          conflict in the network when using DHCP, the IP will be automatically
-          changed.
-  -p, --peers [<PEERS>...]
-          peers to connect initially
-  -e, --external-node <EXTERNAL_NODE>
-          use a public shared node to discover peers
-  -n, --proxy-networks <PROXY_NETWORKS>
-          export local networks to other peers in the vpn
-  -r, --rpc-portal <RPC_PORTAL>
-          rpc portal address to listen for management. 0 means random
-          port, 12345 means listen on 12345 of localhost, 0.0.0.0:12345 means
-          listen on 12345 of all interfaces. default is 0 and will try 15888 first [default: 0]
-  -l, --listeners [<LISTENERS>...]
-          listeners to accept connections, allow format:
-          a port number: 11010, means tcp/udp will listen on 11010, ws/wss will listen on 11010 and 11011, wg will
-          listen on 11011
-          url: tcp://0.0.0.0:11010, tcp can be tcp, udp, ring, wg, ws, wss,
-          proto:port: wg:11011, means listen on 11011 with wireguard protocol
-          url and proto:port can occur multiple times.
-                       [default: 11010]
-      --no-listener
-          do not listen on any port, only connect to peers
-      --console-log-level <CONSOLE_LOG_LEVEL>
-          console log level [possible values: trace, debug, info, warn, error, off]
-      --file-log-level <FILE_LOG_LEVEL>
-          file log level [possible values: trace, debug, info, warn, error, off]
-      --file-log-dir <FILE_LOG_DIR>
-          directory to store log files
-      --hostname <HOSTNAME>
-          host name to identify this device
-  -m, --instance-name <INSTANCE_NAME>
-          instance name to identify this vpn node in same machine [default: default]
-      --vpn-portal <VPN_PORTAL>
-          url that defines the vpn portal, allow other vpn clients to connect.
-          example: wg://0.0.0.0:11010/10.14.14.0/24, means the vpn portal is a wireguard server listening on
-          vpn.example.com:11010,
-          and the vpn client is in network of 10.14.14.0/24
-      --default-protocol <DEFAULT_PROTOCOL>
-          default protocol to use when connecting to peers
-  -u, --disable-encryption
-          disable encryption for peers communication, default is false, must be same with peers
-      --multi-thread
-          use multi-thread runtime, default is single-thread
-      --disable-ipv6
-          do not use ipv6
-      --dev-name <DEV_NAME>
-          optional tun interface name
-      --mtu <MTU>
-          mtu of the TUN device, default is 1420 for non-encryption, 1400 for encryption
-      --latency-first
-          latency first mode, will try to relay traffic with lowest latency path, default is using shortest path
-      --exit-nodes [<EXIT_NODES>...]
-          exit nodes to forward all traffic to, a virtual ipv4 address, priority is determined by the order of the
-          list
-      --enable-exit-node
-          allow this node to be an exit node, default is false
-      --no-tun
-          do not create TUN device, can use subnet proxy to access node
-      --use-smoltcp
-          enable smoltcp stack for subnet proxy
-      --manual-routes [<MANUAL_ROUTES>...]
-          assign routes cidr manually, will disable subnet proxy and
-          wireguard routes propogated from peers. e.g.: 192.168.0.0/16
-      --relay-network-whitelist [<RELAY_NETWORK_WHITELIST>...]
-          only relay traffic of whitelisted networks, input is a wildcard
-          string, e.g.: '*' (all networks), 'def*' (network prefixed with def), can specify multiple networks
-          disable relay if arg is empty. default is allowing all networks
-  -h, --help
-          Print help
-  -V, --version
-          Print version
-```
+  - `-h, --help`: 打印帮助信息。
+  - `-V, --version`: 打印版本信息。
+
+- **配置文件**
+
+  - `-c, --config-file <CONFIG_FILE>`: 配置文件路径。如果设置了此选项，其他所有选项都将被忽略。
+
+- **实例标识**
+  - `--hostname <HOSTNAME>`: 用于标识此设备的主机名。
+  - `-m, --instance-name <INSTANCE_NAME>`: 实例名称，默认为`default`。
+
+## 网络配置
+
+- **服务器与网络**
+
+  - `-w, --config-server <CONFIG_SERVER>`: 配置服务器地址。
+  - `--network-name <NETWORK_NAME>`: 网络名称，默认为`default`。
+  - `--network-secret <NETWORK_SECRET>`: 网络密钥，默认为空。
+
+- **IP配置**
+  - `-i, --ipv4 <IPV4>`: 此节点的IPv4地址，空表示仅转发数据包。
+  - `-d, --dhcp`: 自动设置IP地址，默认从10.0.0.1开始。
+  - `--dev-name <DEV_NAME>`: 可选TUN接口名称。
+  - `--mtu <MTU>`: TUN设备的MTU，默认非加密时为1380，加密时为1360。
+
+## 连接管理
+
+- **监听器与门户**
+
+  - `-l, --listeners [<LISTENERS>...]`: 监听器用于接受连接。
+  - `--mapped-listeners [<MAPPED_LISTENERS>...]`: 指定监听器的公网地址。
+  - `--no-listener`: 不监听任何端口。
+  - `--vpn-portal <VPN_PORTAL>`: 定义VPN门户的URL。
+  - `--rpc-portal <RPC_PORTAL>`: 管理的RPC门户地址，默认尝试15888。
+
+- **节点与路由**
+  - `-p, --peers [<PEERS>...]`: 初始要连接的对等节点。
+  - `-e, --external-node <EXTERNAL_NODE>`: 使用公共共享节点来发现对等节点。
+  - `--exit-nodes [<EXIT_NODES>...]`: 转发所有流量的出口节点。
+  - `--enable-exit-node`: 允许此节点成为出口节点。
+  - `--manual-routes [<MANUAL_ROUTES>...]`: 手动分配路由CIDR。
+  - `--relay-network-whitelist [<RELAY_NETWORK_WHITELIST>...]`: 仅转发白名单网络的流量。
+
+## 日志和调试
+
+- **日志级别**
+
+  - `--console-log-level <CONSOLE_LOG_LEVEL>`: 控制台日志级别。
+  - `--file-log-level <FILE_LOG_LEVEL>`: 文件日志级别。
+
+- **日志存储**
+  - `--file-log-dir <FILE_LOG_DIR>`: 存储日志文件的目录。
+
+## 高级功能
+
+- **性能优化**
+
+  - `--latency-first`: 延迟优先模式。
+  - `--multi-thread`: 使用多线程运行时。
+  - `--disable-udp-hole-punching`: 禁用UDP打洞功能。
+
+- **安全与隐私**
+
+  - `-u, --disable-encryption`: 禁用加密，默认为false。
+  - `--disable-ipv6`: 不使用IPv6。
+  - `--compression <COMPRESSION>`: 使用的压缩算法，默认为`none`。
+
+- **代理与转发**
+
+  - `--proxy-networks <PROXY_NETWORKS>`: 导出本地网络到其他对等节点。
+  - `--socks5 <SOCKS5>`: 启用 socks5 服务器。
+  - `--ipv6-listener <IPV6_LISTENER>`: IPv6监听器URL。
+  - `--no-tun`: 不创建TUN设备。
+  - `--use-smoltcp`: 启用smoltcp堆栈。
+  - `--bind-device <BIND_DEVICE>`: 绑定套接字到物理设备。
+  - `--relay-all-peer-rpc`: 转发所有对等节点的RPC数据包。
+
+- **限制通信**
+  - `--disable-p2p`: 禁用P2P通信。
+  - `--no-tun`: 不创建TUN设备以使用子网代理访问节点。

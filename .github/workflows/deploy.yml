@@ -6,7 +6,7 @@ on:
   # 在针对 `main` 分支的推送上运行。如果你
   # 使用 `master` 分支作为默认分支，请将其更改为 `master`
   push:
-    branches: [dev]
+    branches: [main]
 
   # 允许你从 Actions 选项卡手动运行此工作流程
   workflow_dispatch:
@@ -31,7 +31,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # 如果未启用 lastUpdated，则不需要
+          fetch-depth: 1 # 如果未启用 lastUpdated，则不需要
+          submodules: recursive
       - uses: pnpm/action-setup@v3 # 如果使用 pnpm，请取消注释
         with:
           version: 9
@@ -45,13 +46,26 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Install dependencies
-        run: pnpm install # 或 pnpm install / yarn install / bun install
+        run: pnpm -r install # 或 pnpm install / yarn install / bun install
       - name: Build with VitePress
         run: pnpm run docs:build # 或 pnpm docs:build / yarn docs:build / bun run docs:build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: .vitepress/dist
+      - name: Upload OSS
+        uses: Menci/upload-to-oss@main
+        with:
+          access-key-id: ${{ secrets.ALIYUN_OSS_ACCESS_ID }}
+          access-key-secret: ${{ secrets.ALIYUN_OSS_ACCESS_KEY }}
+          endpoint: ${{ secrets.ALIYUN_OSS_ENDPOINT }}
+          bucket: ${{ secrets.ALIYUN_OSS_BUCKET }}
+          local-path: .vitepress/dist
+          remote-path: /
+          no-delete-remote-files: false
+          retry: 5
+          delay-html-file-upload: true
+
 
   # 部署工作
   deploy:

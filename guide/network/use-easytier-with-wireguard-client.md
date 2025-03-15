@@ -1,20 +1,20 @@
 # 使用 WireGuard 客户端接入
 
-EasyTier 可以用作 WireGuard 服务端，让任意安装了 WireGuard 客户端的设备访问 EasyTier 网络。对于目前 EasyTier 不支持的平台 （如 iOS、Android 等），可以使用这种方式接入 EasyTier 网络。
+EasyTier 可以用作 WireGuard 服务端，让任意安装了 WireGuard 客户端的设备访问 EasyTier 网络。对于目前 EasyTier 不支持的平台 （如 iOS），可以使用这种方式接入 EasyTier 网络。
 
 假设网络拓扑如下：
 
 ```mermaid
 flowchart LR
 
-ios[[iPhone \n 安装 WireGuard]]
+ios[[iPhone </br> 安装 WireGuard]]
 
 subgraph 节点 A IP 22.1.1.1
-nodea[EasyTier\n10.144.144.1]
+nodea[EasyTier</br>10.144.144.1]
 end
 
 subgraph 节点 B
-nodeb[EasyTier\n10.144.144.2]
+nodeb[EasyTier</br>10.144.144.2]
 end
 
 id1[[10.1.1.0/24]]
@@ -45,7 +45,7 @@ Address = 10.14.14.0/24 # should assign an ip from this cidr manually
 [Peer]
 PublicKey = zhrZQg4QdPZs8CajT3r4fmzcNsWpBL9ImQCUsnlXyGM=
 AllowedIPs = 192.168.80.0/20,10.147.223.0/24,10.144.144.0/24
-Endpoint = 0.0.0.0:11013 # should be the public ip of the vpn server
+Endpoint = 0.0.0.0:11013 # should be the public ip of the easytier server
 
 connected_clients:
 []
